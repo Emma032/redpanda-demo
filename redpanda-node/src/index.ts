@@ -1,6 +1,6 @@
 // red-panda-node/src/index.ts
 import readline from 'readline';
-    
+
 import * as Producer from './producer';
 import * as Consumer from './consumer';
 

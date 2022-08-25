@@ -1,6 +1,6 @@
 // red-panda-node/src/producer.ts
 import {Kafka} from 'kafkajs';
-    
+
 const kafka = new Kafka({
   clientId: 'chat-app',
   brokers: ['127.0.0.1:9092']

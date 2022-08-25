@@ -22,14 +22,15 @@ services:
     - PLAINTEXT://0.0.0.0:28082,OUTSIDE://0.0.0.0:8082
     - --advertise-pandaproxy-addr
     - PLAINTEXT://redpanda:28082,OUTSIDE://localhost:8082
+    expose:
+      - 9644
     ports:
     - 8081:8081
     - 8082:8082
     - 9092:9092
     - 28082:28082
     - 29092:29092
-    expose:
-      - 9644
+    - 9644:9644
 
   grafana:
     image: grafana/grafana-enterprise
@@ -61,6 +62,26 @@ services:
       - '--web.enable-lifecycle'
     labels:
       org.label-schema.group: "monitoring"
+    
+  otel-collector:
+    image: otel/opentelemetry-collector
+    command: ["--config=/etc/otel-collector-config.yml"]
+    volumes:
+      - ./otel-collector-config.yml:/etc/otel-collector-config.yml
+    container_name: otel-collector
+    networks:
+      - monitor-net
+    expose:
+      # - 8888
+      - 8889
+    ports:
+      - "1888:1888"   # pprof extension
+      - "8888:8888"   # Prometheus metrics exposed by the collector
+      - "8889:8889"   # Prometheus exporter metrics
+      - "13133:13133" # health_check extension
+      - "4317:4317"   # OTLP gRPC receiver
+      - "4318:4318"   # OTLP http receiver
+      - "55679:55679" # zpages extension
 
 networks:
   monitor-net:
